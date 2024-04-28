@@ -12,7 +12,7 @@ using ariel::Algorithms;
 using ariel::Graph;
 const int INF = numeric_limits<int>::max();
 
-bool dfs(int v, vector<bool> &visited, vector<bool> &recStack, const vector<vector<int>> &graph, vector<int> &parent)
+bool Algorithms::dfs(int v, vector<bool> &visited, vector<bool> &recStack, const vector<vector<int>> &graph, vector<int> &parent) const
 {
     visited[v] = true;
     recStack[v] = true;
@@ -54,7 +54,7 @@ bool dfs(int v, vector<bool> &visited, vector<bool> &recStack, const vector<vect
     return false;
 }
 
-bool isComponentBipartite(int start, const vector<vector<int>> &graph, vector<int> &colors)
+bool Algorithms::isComponentBipartite(int start, const vector<vector<int>> &graph, vector<int> &colors) const
 {
     queue<int> q;
     q.push(start);
@@ -85,7 +85,7 @@ bool isComponentBipartite(int start, const vector<vector<int>> &graph, vector<in
     return true; // No conflicts, bipartite
 }
 
-bool bellmanFord(int start, const vector<vector<int>> &graph, vector<int> &distance, vector<int> &parent)
+bool Algorithms::bellmanFord(int start, const vector<vector<int>> &graph, vector<int> &distance, vector<int> &parent) const
 {
     int n = graph.size();
     distance.assign(n, INF);
@@ -137,7 +137,7 @@ bool bellmanFord(int start, const vector<vector<int>> &graph, vector<int> &dista
     return false; // No negative cycle found
 }
 
-bool isConnected(Graph &g)
+int Algorithms::isConnected(const Graph &g) const
 {
     vector<vector<int>> graph = g.getGraph();
     int vertices = g.getVertices();
@@ -163,13 +163,13 @@ bool isConnected(Graph &g)
     {
         if (!vertex)
         {
-            return false;
+            return 0;
         }
     }
-    return true;
+    return 1;
 }
 
-vector<int> shortestPath(Graph g, int start, int end)
+vector<int> Algorithms::shortestPath(const Graph &g, int start, int end) const
 {
     vector<vector<int>> graph = g.getGraph();
     int vertices = g.getVertices();
@@ -218,7 +218,7 @@ vector<int> shortestPath(Graph g, int start, int end)
     return path;
 }
 
-int isContainsCycle(Graph g)
+int Algorithms::isContainsCycle(const Graph &g) const
 {
     const vector<vector<int>> &graph = g.getGraph();
     int n = g.getVertices();
@@ -240,7 +240,7 @@ int isContainsCycle(Graph g)
     return 0; // No cycle found
 }
 
-int isBipartite(Graph g)
+int Algorithms::isBipartite(const Graph &g) const
 {
     const vector<vector<int>> &graph = g.getGraph();
     int n = g.getVertices();
@@ -261,7 +261,7 @@ int isBipartite(Graph g)
     return 1; // Bipartite
 }
 
-int negativeCycle(Graph g)
+int Algorithms::negativeCycle(const Graph &g) const
 {
     const vector<vector<int>> &graph = g.getGraph();
     int n = g.getVertices();
