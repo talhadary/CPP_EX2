@@ -1,27 +1,25 @@
-#ifndef GRAPH_HPP
-#define GRAPH_HPP
+#pragma once
 
-#include <iostream>
 #include <vector>
 
-using namespace std;
+namespace ariel
+{
 class Graph
 {
   private:
-    vector<vector<int>> graph;
+    std::vector<std::vector<int>> graph;
     int vertices;
     int edges;
 
-    bool isSquare(const vector<vector<int>> &graph);
-    int countVertices(const vector<vector<int>> &graph);
-    int countEdges(const vector<vector<int>> &graph);
+    bool isSquare(const std::vector<std::vector<int>> &graph);
+    int countVertices(const std::vector<std::vector<int>> &graph);
+    int countEdges(const std::vector<std::vector<int>> &graph);
 
   public:
-    void loadGraph(vector<vector<int>> &graph);
-    void printGraph();
-    const vector<vector<int>> &getGraph() const;
+    void loadGraph(const std::vector<std::vector<int>> &graph);
+    void printGraph() const;
+    const std::vector<std::vector<int>> &getGraph() const;
     int getVertices() const;
     int getEdges() const;
 };
-
-#endif // GRAPH_HPP
+} // namespace ariel

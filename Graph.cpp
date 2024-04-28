@@ -1,6 +1,9 @@
 #include "Graph.hpp"
+#include <iostream>
 
 using namespace std;
+using ariel::Graph;
+
 bool Graph::isSquare(const vector<vector<int>> &graph)
 {
     int rows = graph.size();
@@ -32,7 +35,7 @@ int Graph::countEdges(const vector<vector<int>> &graph)
     return edges;
 }
 
-void Graph::loadGraph(vector<vector<int>> &graph)
+void Graph::loadGraph(const vector<vector<int>> &graph)
 {
     if (isSquare(graph))
     {
@@ -46,7 +49,7 @@ void Graph::loadGraph(vector<vector<int>> &graph)
     }
 }
 
-void Graph::printGraph()
+void Graph::printGraph() const
 {
     vector<vector<int>> graph = getGraph();
     cout << "Graph with " << vertices << " vertices and " << edges << " edges" << endl;

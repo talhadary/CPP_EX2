@@ -1,3 +1,4 @@
+#include "Algorithms.hpp"
 #include "Graph.hpp"
 #include <algorithm>
 #include <iostream>
@@ -5,10 +6,10 @@
 #include <queue>
 #include <stdexcept>
 #include <vector>
-#include "Algorithms.hpp"
 
 using namespace std;
-using namespace Algorithms;
+using ariel::Algorithms;
+using ariel::Graph;
 const int INF = numeric_limits<int>::max();
 
 bool dfs(int v, vector<bool> &visited, vector<bool> &recStack, const vector<vector<int>> &graph, vector<int> &parent)
