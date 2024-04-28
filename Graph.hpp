@@ -4,8 +4,8 @@
 
 namespace ariel
 {
-class Graph
-{
+  class Graph
+  {
   private:
     std::vector<std::vector<int>> graph;
     int vertices;
@@ -21,5 +21,5 @@ class Graph
     const std::vector<std::vector<int>> &getGraph() const;
     int getVertices() const;
     int getEdges() const;
-};
+  };
 } // namespace ariel
