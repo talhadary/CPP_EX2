@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
+#include <stdexcept>
 
 namespace ariel
 {
@@ -11,9 +13,9 @@ namespace ariel
     int vertices;
     int edges;
 
-    bool isSquare(const std::vector<std::vector<int>> &graph);
-    int countVertices(const std::vector<std::vector<int>> &graph);
-    int countEdges(const std::vector<std::vector<int>> &graph);
+    bool isSquare();
+    int countVertices();
+    int countEdges();
 
   public:
     void loadGraph(const std::vector<std::vector<int>> &graph);

@@ -1,10 +1,9 @@
 #include "Graph.hpp"
-#include <iostream>
 
 using namespace std;
 using ariel::Graph;
 
-bool Graph::isSquare(const vector<vector<int>> &graph)
+bool Graph::isSquare()
 {
     int rows = graph.size();
     if (rows == 0)
@@ -16,12 +15,12 @@ bool Graph::isSquare(const vector<vector<int>> &graph)
     return rows == cols;
 }
 
-int Graph::countVertices(const vector<vector<int>> &graph)
+int Graph::countVertices()
 {
     return graph.size();
 }
 
-int Graph::countEdges(const vector<vector<int>> &graph)
+int Graph::countEdges()
 {
     int edges = 0;
     for (const vector<int> &row : graph)
@@ -37,15 +36,15 @@ int Graph::countEdges(const vector<vector<int>> &graph)
 
 void Graph::loadGraph(const vector<vector<int>> &graph)
 {
-    if (isSquare(graph))
+    if (isSquare())
     {
         this->graph = graph;
-        this->vertices = countVertices(graph);
-        this->edges = countEdges(graph);
+        this->vertices = countVertices();
+        this->edges = countEdges();
     }
     else
     {
-        cout << "Error: this matrix isn't square!" << endl;
+        throw runtime_error("Invalid adjacency matrix!");
     }
 }
 

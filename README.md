@@ -1,29 +1,51 @@
-# מטלה 1 - גרפים (Classes and Namespaces)
+# CPP_EX1_24
 
-המטרה שלכם במטלה הזאת היא ליצור מחלקה שמייצגת גרף ולממש אלגוריתמים על הגרפים (זה הזמן להזכר בקורס אלגוריתמים 1).
+## Overview
+This project implements various graph algorithms using C++. The algorithms include determining strong connectivity, finding shortest paths, detecting cycles, checking bipartiteness, and identifying negative cycles in a graph.
 
-במטלה הזאת הייצוג של הגרף שלכם יתבצע בעזרת מטריצת שכנויות - https://he.wikipedia.org/wiki/%D7%9E%D7%98%D7%A8%D7%99%D7%A6%D7%AA_%D7%A9%D7%9B%D7%A0%D7%95%D7%AA.
+## Files
+- `Graph.cpp`: Contains the implementation of the Graph class, which represents a graph using an adjacency matrix. It includes methods to load a graph from an adjacency matrix and to print the graph.
+- `Graph.hpp`: The header file for `Graph.cpp`, contains the declaration of the ariel namespace, the Graph class and its data members.
+- `Algorithms.cpp`: Implements the graph algorithms mentioned above.
+- `Algorithms.hpp`: The header file for `Algorithms.cpp`, contains the declaration of the ariel namespace, the Algorithms class and its data members.
 
-הגרף יכול להיות גרף מכוון ולא מכוון וגם גרף ממושקל. מטריצת השכנויות חייבת להיות מטריצה ריבועית.
+## Graph Implementation
+The Graph Class, which is part of the ariel namespace, contains private data members and member functions:
+1. graph: An adjacency matrix (2-dimensional vector int array) representing the vertices and the edges between them.
+2. vertices: A count of how many vertices the graph contains.
+3. edges: A count of how many edges the graph has. Since the demo didn't specify which graphs are directed and which aren't, I chose to count the edges as if all the graphs are directed, which makes the implementation of the code much simpler.
+4. isSquare(): Validity check for the adjacency matrix. Checks if the matrix has a size and if it's a square matrix.
+5. countVertices(): Returns the size of the adjacency matrix (number of rows).
+6. countEdges: Since we consider every graph as a directed graph here, we go over every vertex, and count how many edges it has (count every connection twice), and return the value.
+The Graph class also has public data members and member functions:
+7. loadGraph(graph): Receives an adjacency matrix, checks its validity using isSquare(). If it's valid, updates the graph private data member, if it's not, throws an exception.
+8. printGraph(): Prints out "Graph with x vertices and y edges", then prints the graph in the following format:
+                                            
+{0, 1, 0}
+{1, 0, 1}
+{0, 1, 0}
 
-עליכם לכתוב את הקבצים הבאים:
+3. getGraph(): Returns the Adjacency matrix by reference.
+4. getVertices(): Returns private data member `vertices` by value.
+5. getEdges(): Return private data member `edges` by value.
 
-```
-Graph.cpp
-Algorithms.cpp
-```
+## Algorithms Implementations
+1. isConnected(g): Determines if the graph 'g' is strongly connected using a modified BFS. Traverses in BFS through the graph and keeps track of visited vertices. Then checks if we visited all the vertices. Does this to each vertex in the graph (in case of a directed graph). If every time we visited each vertex, the graph is strongly connected.
+2. shortestPath(g, start, end): Uses Dijkstra's algorithm to find the shortest path between any two vertices in an undirected/directed/weighted graph. If it doesn't exist, it returns an array of length 1 containing -1. The algorithm works as follows:
+    - Initialize a list of distances to each vertex, with the value of infinity, and change the start vertex to 0.
+    - Initialize a list of the previous vertex to each vertex you reach (e.g., prev[1] = 0 meaning we got to vertex 1 from vertex 0).
+    - Begin from the start vertex and check the distance to each vertex using the first path you find. If the new distance to each node you reach is smaller than the current (infinity), switch it for the new one.
+    - Do that again n-1 times, each time use the new best path and try to optimize it.
+    - When you can't optimize it anymore, reconstruct the path using the prev list and return it.
+3. isContainsCycle(g): Detects if there is any cycle in graph 'g' using a DFS. It works as follows:
+    - Initializing visited array to keep track of visited vertices. Initializing recStack array to keep track of the vertices we visited during the current search. Initializing parent array to keep track of which vertex came after which.
+    - For each vertex we didn't visit before, do a DFS.
+    - If during the search we come across the same vertex twice, we found a cycle. Reconstruct it using the parent and recStack arrays. Print the cycle and return true.
+    - If we didn't find a cycle in any of the searches, return false.
+4. isBipartite(g): Checks if the graph 'g' is bipartite. The algorithm works as follows:
+    - Initializing colors array with all elements as -1. We send each vertex with the color -1 (not visited) to a helper method, where we initialize a queue.
+    - In the helper method, we iterate over the graph from the start vertex and check the color of each vertex we get to. If it's not colored, color it opposite of the previous vertex. If it is colored the same as the previous vertex, the graph is not bipartite, return false, else do nothing. If after going over all vertices we didn't return false, return true.
+5. negativeCycle(g): Identifies a negative cycle in graph 'g' using Bellman Ford algorithm. It works similarly to shortestPath(), except with the addition of negative values. After we find the shortest path possible with n-1 iterations, if we can still improve it, that means we can infinitely improve it. That is because there's a cycle with a negative net distance. Create a new array, and backtrack while adding the vertices to the array, then return the array and return true. If no cycles are found, return false.
 
-הקובץ `Graph.cpp` מכיל מחלקה המייצגת גרף.
-המחלקה מכילה את הפעולות `loadGraph` המקבלת מטריצת שכנויות וטוענת אותה לתוך הגרף ו-`printGraph` שמדפיסה את הייצוג של הגרף (הפורמט לבחירתכם, ראו דוגמה ב-`Demo.cpp`).
-
-הקובץ `Algorithms.cpp` מכיל מימושים לאלגוריתמים על גרפים. ביניהם:
-
-- `isConnected(g)` - האלגוריתם מקבל גרף ומחזיר 1 אם הגרף קשיר (אחרת מחזיר 0).
-- `shortestPath(g,start,end)` - האלגוריתם מקבל גרף, קודקוד התחלה וקודקוד סיום ומחזיר את המסלול הקל ביותר (במקרה שהגרף לא ממושקל - הקצר ביותר) בין שני הקודקודים. במידה ואין מסלול כזה, האלגוריתם יחזיר -1.
-- `isContainsCycle(g)` - האלגוריתם מקבל גרף ומדפיס מעגל כלשהו. אם לא קיים מעגל בגרף, האלגוריתם יחזיר 0.
-- `isBipartite(g)` - האלגוריתם מקבל גרף ומחזיר את החלוקה של הגרף לגרף דו-צדדי. אם אי אפשר לחלק את הגרף, האלגוריתם יחזיר 0.
-- `negativeCycle(g)` - האלגוריתם מקבל גרף ומוצא מעגל שלילי (כלומר מעגל שסכום המשקלים של הצלעות שלילי). אם לא קיים מעגל כזה, האלגוריתם ידפיס שלא קיים מעגל שלילי.
-
-הקובץ `Demo.cpp` מכיל דוגמאות של קלטים ופלטים.
-עליכם לכתוב בתחילת כל קובץ את מספר תעודת הזהות שלכם ואת המייל. כמו כן, בנוסף לקבצים של המטלה אתם נדרשים להגיש גם קובץ README המתאר את אופן המימוש ואת החלוקה שביצעתם בקוד (סוג של מדריך משתמש). אי עמידה בהנחיות תגרור הפחתה בציון. בהצלחה!
-  
+## Contributor
+- [Tal Hadary](ID:326648706)

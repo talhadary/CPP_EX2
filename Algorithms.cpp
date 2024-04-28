@@ -1,11 +1,5 @@
 #include "Algorithms.hpp"
 #include "Graph.hpp"
-#include <algorithm>
-#include <iostream>
-#include <limits>
-#include <queue>
-#include <stdexcept>
-#include <vector>
 
 using namespace std;
 using ariel::Algorithms;
@@ -186,7 +180,7 @@ bool Algorithms::isConnected(const Graph &g)
         }
         for (int neighbor : graph[vertex])
         {
-            if (neighbor && !visited[neighbor])
+            if (!visited[neighbor])
             {
                 return false;
             }
@@ -242,6 +236,12 @@ vector<int> Algorithms::shortestPath(const Graph &g, int start, int end)
         path.push_back(at);
     }
     reverse(path.begin(), path.end());
+
+    if (path.size() == 0)
+    {
+        path.push_back(-1);
+    }
+    
     return path;
 }
 
@@ -272,7 +272,6 @@ bool Algorithms::isBipartite(const Graph &g)
     const vector<vector<int>> &graph = g.getGraph();
     int n = g.getVertices();
     vector<int> colors(n, -1); // Initialize colors, -1 indicates uncolored
-    bool flag;
 
     for (int i = 0; i < n; ++i)
     {

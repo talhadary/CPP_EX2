@@ -2,6 +2,10 @@
 
 #include "Graph.hpp"
 #include <vector>
+#include <algorithm>
+#include <iostream>
+#include <limits>
+#include <queue>
 
 namespace ariel
 {
