@@ -3,7 +3,7 @@
 using namespace std;
 using ariel::Graph;
 
-bool Graph::isSquare()
+bool Graph::isSquare(const vector<vector<int>> &graph)
 {
     int rows = graph.size();
     if (rows == 0)
@@ -15,14 +15,14 @@ bool Graph::isSquare()
     return rows == cols;
 }
 
-int Graph::countVertices()
+size_t Graph::countVertices()
 {
     return graph.size();
 }
 
-int Graph::countEdges()
+size_t Graph::countEdges()
 {
-    int edges = 0;
+    size_t edges = 0;
     for (const vector<int> &row : graph)
     {
         for (int value : row)
@@ -36,7 +36,7 @@ int Graph::countEdges()
 
 void Graph::loadGraph(const vector<vector<int>> &graph)
 {
-    if (isSquare())
+    if (isSquare(graph))
     {
         this->graph = graph;
         this->vertices = countVertices();
@@ -48,9 +48,9 @@ void Graph::loadGraph(const vector<vector<int>> &graph)
     }
 }
 
-void Graph::printGraph() const
+void Graph::printGraph()
 {
-    vector<vector<int>> graph = getGraph();
+    vector<vector<int>> graph = this->graph;
     cout << "Graph with " << vertices << " vertices and " << edges << " edges" << endl;
     for (const vector<int> &row : graph)
     {
@@ -65,17 +65,17 @@ void Graph::printGraph() const
 // Getter method to access the graph
 const vector<vector<int>> &Graph::getGraph() const
 {
-    return graph;
+    return this->graph;
 }
 
 // Getter method for num of vertices
-int Graph::getVertices() const
+size_t Graph::getVertices() const
 {
-    return vertices;
+    return this->vertices;
 }
 
 // Getter method for num of edges
-int Graph::getEdges() const
+size_t Graph::getEdges() const
 {
-    return edges;
+    return this->edges;
 }

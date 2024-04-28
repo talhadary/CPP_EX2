@@ -24,8 +24,8 @@ int main()
 
     g.printGraph();                                    // Should print: "Graph with 3 vertices and 4 edges."
     cout << Algorithms::isConnected(g) << endl;       // Should print: "1" (true).
-    vector<int> path = Algorithms::shortestPath(g, 0, 2);
-    for (int vertex : path)
+    vector<size_t> path = Algorithms::shortestPath(g, 0, 2);
+    for (size_t vertex : path)
     {
         cout << vertex << ", ";
     }
@@ -45,7 +45,7 @@ int main()
 
     g.printGraph();                                    // Should print: "Graph with 5 vertices and 8 edges."
     cout << Algorithms::isConnected(g) << endl;        // Should print: "0" (false).
-    vector<int> path = Algorithms::shortestPath(g, 0, 2);
+    path = Algorithms::shortestPath(g, 0, 2);
     for (int vertex : path)
     {
         cout << vertex << ", ";
@@ -64,7 +64,7 @@ int main()
 
     g.printGraph();                                    // Should print: "Graph with 5 vertices and 10 edges."
     cout << Algorithms::isConnected(g) << endl;        // Should print: "1" (true).
-    vector<int> path = Algorithms::shortestPath(g, 0, 2);
+    path = Algorithms::shortestPath(g, 0, 2);
     for (int vertex : path)
     {
         cout << vertex << ", ";

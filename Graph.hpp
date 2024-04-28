@@ -10,18 +10,18 @@ namespace ariel
   {
   private:
     std::vector<std::vector<int>> graph;
-    int vertices;
-    int edges;
+    size_t vertices;
+    size_t edges;
 
-    bool isSquare();
-    int countVertices();
-    int countEdges();
+    static bool isSquare(const std::vector<std::vector<int>> &graph);
+    size_t countVertices();
+    size_t countEdges();
 
   public:
     void loadGraph(const std::vector<std::vector<int>> &graph);
-    void printGraph() const;
+    void printGraph();
     const std::vector<std::vector<int>> &getGraph() const;
-    int getVertices() const;
-    int getEdges() const;
+    size_t getVertices() const;
+    size_t getEdges() const;
   };
 } // namespace ariel
