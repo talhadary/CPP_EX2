@@ -4,23 +4,24 @@
 #include <iostream>
 #include <stdexcept>
 
+using namespace std;
 namespace ariel
 {
   class Graph
   {
   private:
-    std::vector<std::vector<int>> graph;
+    vector<vector<int>> graph;
     size_t vertices;
     size_t edges;
 
-    static bool isSquare(const std::vector<std::vector<int>> &graph);
+    static bool isSquare(const vector<vector<int>> &graph);
     size_t countVertices();
     size_t countEdges();
 
   public:
-    void loadGraph(const std::vector<std::vector<int>> &graph);
+    void loadGraph(const vector<vector<int>> &graph);
     void printGraph();
-    const std::vector<std::vector<int>> &getGraph() const;
+    const vector<vector<int>> &getGraph() const;
     size_t getVertices() const;
     size_t getEdges() const;
   };

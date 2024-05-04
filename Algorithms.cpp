@@ -1,5 +1,4 @@
 #include "Algorithms.hpp"
-#include "Graph.hpp"
 
 using namespace std;
 using ariel::Algorithms;
