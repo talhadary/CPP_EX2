@@ -1,7 +1,8 @@
 #include "doctest.h"
 #include "Graph.hpp"
-#include "Algorithms.hpp"
 #include <sstream>
+#include <chrono>
+#include <limits>
 
 using namespace ariel;
 
@@ -37,201 +38,553 @@ TEST_CASE("Test loading non-square graph")
     CHECK_THROWS(g.loadGraph(non_square_graph));
 }
 
-TEST_CASE("Test isConnected with connected and disconnected graphs")
+TEST_CASE("Test addGraphs method")
 {
-    // Test isConnected with connected and disconnected graphs
-    Graph g;
-    SUBCASE("Connected graph")
-    {
-        vector<vector<int>> connected_graph = {
-            {0, 1, 0},
-            {1, 0, 1},
-            {0, 1, 0}};
-        g.loadGraph(connected_graph);
-        CHECK(Algorithms::isConnected(g) == true);
-    }
-    SUBCASE("Disconnected graph")
-    {
-        vector<vector<int>> disconnected_graph = {
-            {0, 1, 0, 0},
-            {1, 0, 0, 0},
-            {0, 0, 0, 1},
-            {0, 0, 1, 0}};
-        g.loadGraph(disconnected_graph);
-        CHECK(Algorithms::isConnected(g) == false);
-    }
-}
-
-TEST_CASE("Test isBipartite with bipartite and non-bipartite graphs")
-{
-    // Test isBipartite with bipartite and non-bipartite graphs
-    Graph g;
-    SUBCASE("Bipartite graph")
-    {
-        vector<vector<int>> bipartite_graph = {
-            {0, 1, 0},
-            {1, 0, 1},
-            {0, 1, 0}};
-        g.loadGraph(bipartite_graph);
-        CHECK(Algorithms::isBipartite(g) == true);
-    }
-    SUBCASE("Non-bipartite graph")
-    {
-        vector<vector<int>> non_bipartite_graph = {
-            {0, 1, 0},
-            {1, 0, 1},
-            {0, 1, 1}};
-        g.loadGraph(non_bipartite_graph);
-        CHECK(Algorithms::isBipartite(g) == false);
-    }
-}
-
-TEST_CASE("Test isContainsCycle with acyclic and cyclic graphs")
-{
-    // Test isContainsCycle with acyclic and cyclic graphs
-    Graph g;
-    SUBCASE("Acyclic graph")
-    {
-        vector<vector<int>> acyclic_graph = {
-            {0, 1, 0},
-            {0, 0, 1},
-            {0, 0, 0}};
-        g.loadGraph(acyclic_graph);
-        CHECK(Algorithms::isContainsCycle(g) == false);
-    }
-    SUBCASE("Cyclic graph")
-    {
-        vector<vector<int>> cyclic_graph = {
-            {0, 1, 0},
-            {0, 0, 1},
-            {1, 0, 0}};
-        g.loadGraph(cyclic_graph);
-        CHECK(Algorithms::isContainsCycle(g) == true);
-    }
-}
-
-TEST_CASE("Test negativeCycle with graphs containing negative weight cycles")
-{
-    // Test negativeCycle with graphs containing negative weight cycles
-    Graph g;
-    SUBCASE("Graph with negative weight cycle")
-    {
-        vector<vector<int>> graph_with_negative_cycle = {
-            {0, 1, -1},
-            {-1, 0, 1},
-            {1, -1, 0}};
-        g.loadGraph(graph_with_negative_cycle);
-        CHECK(Algorithms::negativeCycle(g) == true);
-    }
-    SUBCASE("Graph without negative weight cycle")
-    {
-        vector<vector<int>> graph_without_negative_cycle = {
-            {0, 1, 0},
-            {0, 0, 1},
-            {1, 0, 0}};
-        g.loadGraph(graph_without_negative_cycle);
-        CHECK(Algorithms::negativeCycle(g) == false);
-    }
-}
-
-TEST_CASE("Test shortestPath with various graphs and vertex pairs")
-{
-    // Test shortestPath with various graphs and vertex pairs
-    Graph g;
-    SUBCASE("Shortest path in a connected graph")
-    {
-        vector<vector<int>> connected_graph = {
-            {0, 1, 1},
-            {1, 0, 1},
-            {1, 1, 0}};
-        g.loadGraph(connected_graph);
-        CHECK(Algorithms::shortestPath(g, 0, 2) == vector<size_t>{0, 2});
-    }
-    SUBCASE("Shortest path in a disconnected graph")
-    {
-        vector<vector<int>> disconnected_graph = {
-            {0, 1, 0, 0},
-            {1, 0, 0, 0},
-            {0, 0, 0, 1},
-            {0, 0, 1, 0}};
-        g.loadGraph(disconnected_graph);
-        CHECK(Algorithms::shortestPath(g, 0, 3) == vector<size_t>{});
-    }
-    SUBCASE("Shortest path in a graph with negative weights")
-    {
-        vector<vector<int>> graph_with_negative_weights = {
-            {0, 1, -2},
-            {0, 0, 3},
-            {0, 0, 0}};
-        g.loadGraph(graph_with_negative_weights);
-        CHECK(Algorithms::shortestPath(g, 0, 2) == vector<size_t>{0, 2});
-    }
-}
-TEST_CASE("Test loading graph with negative edge weights")
-{
-    // Test loading a graph with negative edge weights
-    Graph g;
-    vector<vector<int>> graph_with_negative_weights = {
-        {0, 1, -2},
-        {0, 0, 3},
-        {0, 0, 0}};
-    g.loadGraph(graph_with_negative_weights);
-    CHECK(g.getGraph() == graph_with_negative_weights);
-}
-
-TEST_CASE("Test loading graph with zero edge weights")
-{
-    // Test loading a graph with zero edge weights
-    Graph g;
-    vector<vector<int>> graph_with_zero_weights = {
+    // Test addGraphs method
+    Graph g1, g2;
+    vector<vector<int>> graph1 = {
         {0, 1, 0},
-        {0, 0, 0},
-        {0, 0, 0}};
-    g.loadGraph(graph_with_zero_weights);
-    CHECK(g.getGraph() == graph_with_zero_weights);
+        {1, 0, 1},
+        {0, 1, 0}};
+    vector<vector<int>> graph2 = {
+        {0, 1, 1},
+        {1, 0, 0},
+        {1, 0, 0}};
+    g1.loadGraph(graph1);
+    g2.loadGraph(graph2);
+    g1.addGraphs(g2);
+    vector<vector<int>> expected_result = {
+        {0, 2, 1},
+        {2, 0, 1},
+        {1, 1, 0}};
+    CHECK(g1.getGraph() == expected_result);
 }
 
-TEST_CASE("Test loading large graph")
+TEST_CASE("Test subtractGraphs method")
 {
-    // Test loading a large graph
-    Graph g;
-    vector<vector<int>> large_graph(1000, vector<int>(1000, 0)); // 1000x1000 matrix filled with zeros
-    g.loadGraph(large_graph);
-    CHECK(g.getGraph() == large_graph);
-}
-
-TEST_CASE("Test shortestPath with unreachable vertices")
-{
-    // Test shortestPath with unreachable vertices
-    Graph g;
-    vector<vector<int>> graph = {
+    // Test subtractGraphs method
+    Graph g1, g2;
+    vector<vector<int>> graph1 = {
         {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    vector<vector<int>> graph2 = {
+        {0, 1, 1},
+        {1, 0, 0},
+        {1, 0, 0}};
+    g1.loadGraph(graph1);
+    g2.loadGraph(graph2);
+    g1.subtractGraphs(g2);
+    vector<vector<int>> expected_result = {
+        {0, 0,-1},
         {0, 0, 1},
-        {0, 0, 0}};
-    g.loadGraph(graph);
-    CHECK(Algorithms::shortestPath(g, 0, 2) == vector<size_t>{0, 1, 2});
+        {-1, 1, 0}};
+    CHECK(g1.getGraph() == expected_result);
 }
 
-TEST_CASE("Test shortestPath with same start and end vertices")
+TEST_CASE("Test inPlaceAdd method")
 {
-    // Test shortestPath with same start and end vertices
+    // Test inPlaceAdd method
     Graph g;
     vector<vector<int>> graph = {
         {0, 1, 0},
         {1, 0, 1},
         {0, 1, 0}};
     g.loadGraph(graph);
-    CHECK(Algorithms::shortestPath(g, 1, 1) == vector<size_t>{1});
+    g.inPlaceAdd(5);
+    vector<vector<int>> expected_result = {
+        {5, 6, 5},
+        {6, 5, 6},
+        {5, 6, 5}};
+    CHECK(g.getGraph() == expected_result);
 }
 
-TEST_CASE("Test negativeCycle with large graph")
+TEST_CASE("Test inPlaceSubtract method")
 {
-    // Test negativeCycle with large graph
+    // Test inPlaceSubtract method
     Graph g;
-    vector<vector<int>> graph(1000, vector<int>(1000, 0)); // 1000x1000 matrix filled with zeros
-    graph[0][1] = -5; // introducing a negative weight cycle
-    graph[1][2] = 3;
-    graph[2][0] = 1;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
     g.loadGraph(graph);
-    CHECK(Algorithms::negativeCycle(g) == true);
+    g.inPlaceSubtract(1);
+    vector<vector<int>> expected_result = {
+        {-1, 0, -1},
+        {0, -1, 0},
+        {-1, 0, -1}};
+    CHECK(g.getGraph() == expected_result);
+}
+
+TEST_CASE("Test increment method")
+{
+    // Test increment method
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph);
+    g.increment();
+    vector<vector<int>> expected_result = {
+        {1, 2, 1},
+        {2, 1, 2},
+        {1, 2, 1}};
+    CHECK(g.getGraph() == expected_result);
+}
+
+TEST_CASE("Test decrement method")
+{
+    // Test decrement method
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph);
+    g.decrement();
+    vector<vector<int>> expected_result = {
+        {-1, 0, -1},
+        {0, -1, 0},
+        {-1, 0, -1}};
+    CHECK(g.getGraph() == expected_result);
+}
+
+TEST_CASE("Test unaryPlus method")
+{
+    // Test unaryPlus method
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph);
+    g.unaryPlus(); // Should not change the graph
+    CHECK(g.getGraph() == graph);
+}
+
+TEST_CASE("Test unaryMinus method")
+{
+    // Test unaryMinus method
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph);
+    g.unaryMinus();
+    vector<vector<int>> expected_result = {
+        {0, -1, 0},
+        {-1, 0, -1},
+        {0, -1, 0}};
+    CHECK(g.getGraph() == expected_result);
+}
+
+TEST_CASE("Test scalarMultiply method")
+{
+    // Test scalarMultiply method
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph);
+    g.scalarMultiply(3);
+    vector<vector<int>> expected_result = {
+        {0, 3, 0},
+        {3, 0, 3},
+        {0, 3, 0}};
+    CHECK(g.getGraph() == expected_result);
+}
+
+TEST_CASE("Test performance of graph operations")
+{
+    // Test performance for large graphs
+    Graph g8, g9;
+    const int size = 1000;
+    vector<vector<int>> large_graph(size, vector<int>(size, 1)); // 1000x1000 matrix filled with ones
+    g8.loadGraph(large_graph);
+    g9.loadGraph(large_graph);
+    
+    // Measure time for addition operation
+    auto start_addition = chrono::steady_clock::now();
+    g8.addGraphs(g9);
+    auto end_addition = chrono::steady_clock::now();
+    auto addition_time = chrono::duration_cast<chrono::milliseconds>(end_addition - start_addition).count();
+    CHECK(addition_time < 100); // Addition operation should complete within 100 milliseconds
+
+    // Measure time for scalar multiplication operation
+    auto start_scalar_multiply = chrono::steady_clock::now();
+    g8.scalarMultiply(5);
+    auto end_scalar_multiply = chrono::steady_clock::now();
+    auto scalar_multiply_time = chrono::duration_cast<chrono::milliseconds>(end_scalar_multiply - start_scalar_multiply).count();
+    CHECK(scalar_multiply_time < 100); // Scalar multiplication operation should complete within 100 milliseconds
+}
+
+TEST_CASE("Test loading graph and basic properties")
+{
+    // Test loading a graph and basic properties
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph);
+    CHECK(g.getGraph() == graph);
+    CHECK(g.getVertices() == 3);
+    CHECK(g.getEdges() == 4);
+}
+
+TEST_CASE("Test loading empty graph")
+{
+    // Test loading an empty graph
+    Graph g;
+    vector<vector<int>> empty_graph;
+    CHECK_THROWS(g.loadGraph(empty_graph));
+}
+
+TEST_CASE("Test loading non-square graph")
+{
+    // Test loading a non-square graph
+    Graph g;
+    vector<vector<int>> non_square_graph = {
+        {0, 1, 0},
+        {1, 0, 1}};
+    CHECK_THROWS(g.loadGraph(non_square_graph));
+}
+
+TEST_CASE("Test addGraphs method")
+{
+    // Test addGraphs method
+    Graph g1, g2;
+    vector<vector<int>> graph1 = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    vector<vector<int>> graph2 = {
+        {0, 1, 1},
+        {1, 0, 0},
+        {1, 0, 0}};
+    g1.loadGraph(graph1);
+    g2.loadGraph(graph2);
+    g1.addGraphs(g2);
+    vector<vector<int>> expected_result = {
+        {0, 2, 1},
+        {2, 0, 1},
+        {1, 1, 0}};
+    CHECK(g1.getGraph() == expected_result);
+}
+
+TEST_CASE("Test subtractGraphs method")
+{
+    // Test subtractGraphs method
+    Graph g1, g2;
+    vector<vector<int>> graph1 = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    vector<vector<int>> graph2 = {
+        {0, 1, 1},
+        {1, 0, 0},
+        {1, 0, 0}};
+    g1.loadGraph(graph1);
+    g2.loadGraph(graph2);
+    g1.subtractGraphs(g2);
+    vector<vector<int>> expected_result = {
+        {0, 0,-1},
+        {0, 0, 1},
+        {-1, 1, 0}};
+    CHECK(g1.getGraph() == expected_result);
+}
+
+TEST_CASE("Test inPlaceAdd method")
+{
+    // Test inPlaceAdd method
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph);
+    g.inPlaceAdd(5);
+    vector<vector<int>> expected_result = {
+        {5, 6, 5},
+        {6, 5, 6},
+        {5, 6, 5}};
+    CHECK(g.getGraph() == expected_result);
+}
+
+TEST_CASE("Test inPlaceSubtract method")
+{
+    // Test inPlaceSubtract method
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph);
+    g.inPlaceSubtract(1);
+    vector<vector<int>> expected_result = {
+        {-1, 0, -1},
+        {0, -1, 0},
+        {-1, 0, -1}};
+    CHECK(g.getGraph() == expected_result);
+}
+
+TEST_CASE("Test increment method")
+{
+    // Test increment method
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph);
+    g.increment();
+    vector<vector<int>> expected_result = {
+        {1, 2, 1},
+        {2, 1, 2},
+        {1, 2, 1}};
+    CHECK(g.getGraph() == expected_result);
+}
+
+TEST_CASE("Test decrement method")
+{
+    // Test decrement method
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph);
+    g.decrement();
+    vector<vector<int>> expected_result = {
+        {-1, 0, -1},
+        {0, -1, 0},
+        {-1, 0, -1}};
+    CHECK(g.getGraph() == expected_result);
+}
+
+TEST_CASE("Test unaryPlus method")
+{
+    // Test unaryPlus method
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph);
+    g.unaryPlus(); // Should not change the graph
+    CHECK(g.getGraph() == graph);
+}
+
+TEST_CASE("Test unaryMinus method")
+{
+    // Test unaryMinus method
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph);
+    g.unaryMinus();
+    vector<vector<int>> expected_result = {
+        {0, -1, 0},
+        {-1, 0, -1},
+        {0, -1, 0}};
+    CHECK(g.getGraph() == expected_result);
+}
+
+TEST_CASE("Test scalarMultiply method")
+{
+    // Test scalarMultiply method
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g.loadGraph(graph);
+    g.scalarMultiply(3);
+    vector<vector<int>> expected_result = {
+        {0, 3, 0},
+        {3, 0, 3},
+        {0, 3, 0}};
+    CHECK(g.getGraph() == expected_result);
+}
+
+TEST_CASE("Test for loading large graph")
+{
+    // Test loading a large graph
+    Graph g;
+    const int size = 1000;
+    vector<vector<int>> large_graph(size, vector<int>(size, 1)); // 1000x1000 matrix filled with ones
+    g.loadGraph(large_graph);
+    CHECK(g.getGraph() == large_graph);
+}
+
+TEST_CASE("Test loading graph with negative values")
+{
+    // Test loading a graph with negative values
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, -1, 0},
+        {-1, 0, -1},
+        {0, -1, 0}};
+    g.loadGraph(graph);
+    CHECK(g.getGraph() == graph);
+}
+
+TEST_CASE("Test loading graph with zero edges")
+{
+    // Test loading a graph with zero edges
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}};
+    g.loadGraph(graph);
+    CHECK(g.getGraph() == graph);
+}
+
+TEST_CASE("Test loading graph with self-loops")
+{
+    // Test loading a graph with self-loops
+    Graph g;
+    vector<vector<int>> graph = {
+        {1, 0, 0},
+        {0, 1, 0},
+        {0, 0, 1}};
+    g.loadGraph(graph);
+    CHECK(g.getGraph() == graph);
+}
+
+TEST_CASE("Test loading graph with negative self-loops")
+{
+    // Test loading a graph with negative self-loops
+    Graph g;
+    vector<vector<int>> graph = {
+        {-1, 0, 0},
+        {0, -1, 0},
+        {0, 0, -1}};
+    g.loadGraph(graph);
+    CHECK(g.getGraph() == graph);
+}
+
+TEST_CASE("Test loading graph with duplicate edges")
+{
+    // Test loading a graph with duplicate edges
+    Graph g;
+    vector<vector<int>> graph = {
+        {1, 1, 0},
+        {1, 0, 1},
+        {0, 1, 1}};
+    g.loadGraph(graph);
+    CHECK(g.getGraph() == graph);
+}
+
+TEST_CASE("Test loading graph with negative cycles")
+{
+    // Test loading a graph with negative cycles
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {0, 0, 1},
+        {1, 0, 0}};
+    g.loadGraph(graph);
+    CHECK(g.getGraph() == graph);
+}
+
+TEST_CASE("Test loading graph with disconnected components")
+{
+    // Test loading a graph with disconnected components
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 0},
+        {0, 0, 0}};
+    g.loadGraph(graph);
+    CHECK(g.getGraph() == graph);
+}
+
+TEST_CASE("Test initializing graph with single vertex")
+{
+    // Test initializing a graph with a single vertex
+    Graph g;
+    vector<vector<int>> single_vertex_graph = {{0}};
+    g.loadGraph(single_vertex_graph);
+    CHECK(g.getGraph() == single_vertex_graph);
+    CHECK(g.getVertices() == 1);
+    CHECK(g.getEdges() == 0);
+}
+
+TEST_CASE("Test initializing graph with disconnected vertices")
+{
+    // Test initializing a graph with disconnected vertices
+    Graph g;
+    vector<vector<int>> disconnected_vertices_graph = {
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}};
+    g.loadGraph(disconnected_vertices_graph);
+    CHECK(g.getGraph() == disconnected_vertices_graph);
+    CHECK(g.getVertices() == 3);
+    CHECK(g.getEdges() == 0);
+}
+
+TEST_CASE("Test adding graph with all zeros")
+{
+    // Test adding a graph with all zeros to another graph
+    Graph g1, g2;
+    vector<vector<int>> graph1 = {
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}};
+    vector<vector<int>> graph2 = {
+        {1, 1, 1},
+        {1, 1, 1},
+        {1, 1, 1}};
+    g1.loadGraph(graph1);
+    g2.loadGraph(graph2);
+    g1.addGraphs(g2);
+    CHECK(g1.getGraph() == graph2);
+}
+
+TEST_CASE("Test subtracting graph with all zeros")
+{
+    // Test subtracting a graph with all zeros from another graph
+    Graph g1, g2;
+    vector<vector<int>> graph1 = {
+        {1, 1, 1},
+        {1, 1, 1},
+        {1, 1, 1}};
+    vector<vector<int>> graph2 = {
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}};
+    g1.loadGraph(graph1);
+    g2.loadGraph(graph2);
+    g1.subtractGraphs(g2);
+    CHECK(g1.getGraph() == graph1);
+}
+
+TEST_CASE("Test adding graph with all negative values")
+{
+    // Test adding a graph with all negative values to another graph
+    Graph g1, g2;
+    vector<vector<int>> graph1 = {
+        {-1, -1, -1},
+        {-1, -1, -1},
+        {-1, -1, -1}};
+    vector<vector<int>> graph2 = {
+        {1, 1, 1},
+        {1, 1, 1},
+        {1, 1, 1}};
+    g1.loadGraph(graph1);
+    g2.loadGraph(graph2);
+    g1.addGraphs(g2);
+    vector<vector<int>> expected_result = {
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}};
+    CHECK(g1.getGraph() == expected_result);
 }

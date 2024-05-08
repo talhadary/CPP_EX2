@@ -4,17 +4,18 @@
 #include <iostream>
 #include <stdexcept>
 
+using namespace std;
 namespace ariel
 {
     class Graph
     {
     private:
-        std::vector<std::vector<int>> graph;
+        vector<vector<int>> graph;
 
     public:
-        void loadGraph(const std::vector<std::vector<int>> &adjacencyMatrix);
+        void loadGraph(const vector<vector<int>> &adjacencyMatrix);
         void printGraph() const;
-        const std::vector<std::vector<int>> &getGraph() const;
+        const vector<vector<int>> &getGraph() const;
         size_t getVertices() const;
         size_t getEdges() const;
         void addGraphs(const Graph &other);
@@ -29,7 +30,7 @@ namespace ariel
         Graph multiplyGraphs(const Graph &other) const;
 
     private:
-        static bool isSquare(const std::vector<std::vector<int>> &adjacencyMatrix);
+        static bool isSquare(const vector<vector<int>> &adjacencyMatrix);
         size_t countVertices() const;
         size_t countEdges() const;
     };
