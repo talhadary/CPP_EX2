@@ -4,7 +4,7 @@ using namespace std;
 using ariel::Algorithms;
 using ariel::Graph;
 
-/// @brief Performs DFS to recursively find cycles in the graph.
+/// @brief Performs Depth-First Search (DFS) to recursively find cycles in the graph.
 /// @param v The current vertex being visited.
 /// @param visited A vector to keep track of visited vertices.
 /// @param recStack A stack to track vertices in the current recursion stack.
@@ -39,12 +39,13 @@ bool Algorithms::dfs(size_t v, vector<bool> &visited, vector<bool> &recStack, co
     return false;
 }
 
-/// @brief Checks if the graph component starting from the specified vertex is bipartite using BFS.
+/// @brief Checks if the graph component starting from the specified vertex is bipartite.
 /// @param start The starting vertex for bipartite checking.
 /// @param graph The adjacency matrix of the graph.
-/// @param colors A vector to store colors of vertices, where -1 indicates uncolored.
+/// @param colors A vector to store colors of vertices, where INF indicates uncolored.
+/// @param groups A vector of vectors that represent the 2 color groups.
 /// @return True if the component is bipartite, false otherwise.
-bool Algorithms::isComponentBipartite(size_t start, const vector<vector<int>> &graph, vector<int> &colors)
+bool Algorithms::isComponentBipartite(size_t start, const vector<vector<int>> &graph, vector<size_t> &colors, vector<vector<size_t>> &groups)
 {
     queue<size_t> q;
     q.push(start);
@@ -57,61 +58,63 @@ bool Algorithms::isComponentBipartite(size_t start, const vector<vector<int>> &g
 
         for (size_t neighbor = 0; neighbor < graph[current].size(); ++neighbor)
         {
-            if (graph[current][neighbor] == 1)
+            if (graph[current][neighbor] != 0)
             {
-                if (colors[neighbor] == -1)
+                if (colors[neighbor] == INF)
                 {
                     colors[neighbor] = 1 - colors[current];
                     q.push(neighbor);
                 }
                 else if (colors[neighbor] == colors[current])
                 {
+                    // If the vertex has been visited and is the same color as the previous vertex, return false (not bipartite)
                     return false;
                 }
             }
         }
     }
 
-    // Print the groups
-    cout << "Group A = {";
+    // Add the vertices to groups
+    vector<size_t> group1;
+    vector<size_t> group2;
+
     for (size_t i = 0; i < colors.size(); i++)
     {
         if (colors[i] == 0)
         {
-            cout << i + 1 << " ";
+            group1.push_back(i);
         }
-    }
-    cout << "}" << endl;
-
-    cout << "Group B = {";
-    for (size_t i = 0; i < colors.size(); i++)
-    {
-        if (colors[i] == 1)
+        else
         {
-            cout << i + 1 << " ";
+            group2.push_back(i);
         }
     }
-    cout << "}" << endl;
+    groups.push_back(group1);
+    groups.push_back(group2);
 
+    // All checks passed, return true (bipartite)
     return true;
 }
 
-// Helper method for Bellman Ford to relax an edge if possible
+// Helper method for Bellman-Ford to relax an edge if possible
 bool relaxEdges(const vector<vector<int>> &graph, vector<int> &distance, vector<size_t> &parent, bool &negativeCycleDetected)
 {
     size_t n = graph.size();
-    bool relaxed = false;
+    bool relaxed = false; // Flag to keep track if edges have been relaxed or not
 
+    // Relaxes all edges once
     for (size_t u = 0; u < n; ++u)
     {
         for (size_t v = 0; v < n; ++v)
         {
             if (graph[u][v] != 0 && distance[u] != INF && distance[u] + graph[u][v] < distance[v])
             {
+                // If a negative cycle has been detected, set distance to negative infinity
                 if (negativeCycleDetected)
                 {
                     distance[v] = NEG_INF;
                 }
+                // Otherwise, update distance and parent vectors
                 else
                 {
                     distance[v] = distance[u] + graph[u][v];
@@ -122,6 +125,7 @@ bool relaxEdges(const vector<vector<int>> &graph, vector<int> &distance, vector<
         }
     }
 
+    // Return the flag indicating whether any edges were relaxed
     return relaxed;
 }
 
@@ -135,7 +139,7 @@ bool Algorithms::bellmanFord(size_t start, const vector<vector<int>> &graph, vec
 {
     size_t n = graph.size();
     distance.assign(n, INF);
-    parent.assign(n, -1);
+    parent.assign(n, INF);
     distance[start] = 0;
 
     // Iterate to relax edges
@@ -161,9 +165,9 @@ bool Algorithms::bellmanFord(size_t start, const vector<vector<int>> &graph, vec
     return negativeCycleDetected;
 }
 
-/// @brief bfs search to see of we can get from each vertex to each vertex in graph
-/// @param g the Graph object to check
-/// @return true if graph is connected, false otherwise
+/// @brief Checks if the graph is connected using Breadth-First Search (BFS).
+/// @param g The Graph object to check.
+/// @return True if the graph is connected, false otherwise.
 bool Algorithms::isConnected(const Graph &g)
 {
     vector<vector<int>> graph = g.getGraph();
@@ -184,6 +188,7 @@ bool Algorithms::isConnected(const Graph &g)
             size_t ind = 0;
             for (int neighbor : graph[curr])
             {
+                // If an edge exists and we haven't visited it, add it to the queue
                 if (neighbor && !visited[ind])
                 {
                     travers.push(ind);
@@ -193,33 +198,41 @@ bool Algorithms::isConnected(const Graph &g)
         }
     }
 
-    // Check if all vertices were visited
+    // Check if all vertices were visited and prints accordingly
     for (bool v : visited)
     {
         if (!v)
         {
+            cout << "Graph is not connected!" << endl;
             return false;
         }
     }
+    cout << "Graph is connected!" << endl;
     return true;
 }
 
-/// @brief finds the shortest path between two vertices using bellman ford helper method
-/// @param g Graph object to check
-/// @param start starting vertex
-/// @param end end vertex
-/// @return array of vertices that make up the shortest path
+/// @brief Finds the shortest path between two vertices using the Bellman-Ford algorithm.
+/// @param g The Graph object to check.
+/// @param start The starting vertex.
+/// @param end The end vertex.
+/// @return An array of vertices that make up the shortest path.
 vector<size_t> Algorithms::shortestPath(const Graph &g, size_t start, size_t end)
 {
     size_t vertices = g.getVertices();
     vector<vector<int>> graph = g.getGraph();
     vector<int> dist;
     vector<size_t> prev;
-    bellmanFord(start, graph, dist, prev); // no  need for the returned bool, the method changes the arrays we declared
+    bellmanFord(start, graph, dist, prev);
+    vector<size_t> path; // Initialize the path vector
 
-    vector<size_t> path; // Path is empty
-
-    // if there is a shortest path, build it into path
+    // If start = end, return start
+    if (start == end)
+    {
+        path.push_back(start);
+        return path;
+    }
+    
+    // If there is a shortest path, build it into path
     if (prev[end] != INF && dist[end] != NEG_INF)
     {
         for (size_t at = end; at != INF; at = prev[at])
@@ -232,9 +245,9 @@ vector<size_t> Algorithms::shortestPath(const Graph &g, size_t start, size_t end
     return path;
 }
 
-/// @brief checks if graph contains cycle
-/// @param g Graph object to check
-/// @return true if contains cycle, false otherwise
+/// @brief Checks if the graph contains any cycles.
+/// @param g The Graph object to check.
+/// @return True if the graph contains a cycle, false otherwise.
 bool Algorithms::isContainsCycle(const Graph &g)
 {
     const vector<vector<int>> &graph = g.getGraph();
@@ -243,45 +256,62 @@ bool Algorithms::isContainsCycle(const Graph &g)
     vector<bool> recStack(n, false);
     vector<size_t> parent(n, INF);
 
+    // Check for cycles using DFS
     for (size_t i = 0; i < n; ++i)
     {
         if (!visited[i])
         {
             if (dfs(i, visited, recStack, graph, parent))
             {
-                return true;
+                cout << "Cycle detected!" << endl;
+                return true; // Cycle detected
             }
         }
     }
 
-    return false;
+    cout << "No cycle detected!" << endl;
+    return false; // No cycle found
 }
 
-/// @brief checks if a graph is bipartite (can be split into two groups such that no 2 vertices in the same group share an edge)
-/// @param g Graph object to check
-/// @return true if bipartite, false otherwise
+/// @brief Checks if a graph is bipartite.
+/// @param g The Graph object to check.
+/// @return True if the graph is bipartite, false otherwise.
 bool Algorithms::isBipartite(const Graph &g)
 {
     const vector<vector<int>> &graph = g.getGraph();
     size_t n = g.getVertices();
-    vector<int> colors(n, -1); // Initialize colors, -1 indicates uncolored
+    vector<vector<size_t>> groups;
+    vector<size_t> colors(n, INF); // Initialize colors, INF indicates uncolored
 
-    // Checks for each vertex in graph
+    // Check each vertex in the graph
     for (size_t i = 0; i < n; ++i)
     {
-        if (colors[i] == -1)
-        {                                                // Vertex not visited yet
-            if (!isComponentBipartite(i, graph, colors)) // Checks specific vertex
+        if (colors[i] == INF)
+        {                                                        // Vertex not visited yet
+            if (!isComponentBipartite(i, graph, colors, groups)) // Check specific vertex
             {
+                cout << "Graph is not Bipartite!" << endl;
                 return false; // Not bipartite
             }
         }
     }
 
+    // Print the groups
+    cout << "Graph is Bipartite! These are the possible groups:" << endl;
+    for (size_t i = 0; i < groups.size(); i++)
+    {
+        cout << "Group " << (i % 2) + 1 << ": ";
+        for (size_t vertex : groups[i])
+        {
+            cout << vertex << " ";
+        }
+        cout << endl;
+    }
+
     return true; // Bipartite
 }
 
-/// @brief Checks for the presence of any negative weight cycles in the graph using Bellman-Ford algorithm from every vertex.
+/// @brief Checks for the presence of any negative weight cycles in the graph.
 /// @param g The Graph object containing the adjacency matrix and vertex count.
 /// @return True if any negative weight cycle is found, false otherwise.
 bool Algorithms::negativeCycle(const Graph &g)
@@ -291,14 +321,16 @@ bool Algorithms::negativeCycle(const Graph &g)
     vector<int> distance;
     vector<size_t> parent;
 
-    // Goes over all vertices incase of disconnected vertex
+    // Check for negative cycles from each vertex
     for (size_t i = 0; i < n; ++i)
     {
         if (bellmanFord(i, graph, distance, parent))
         {
+            cout << "Negative cycle detected!" << endl;
             return true; // Negative cycle found
         }
     }
 
+    cout << "No negative cycle detected!" << endl;
     return false; // No negative cycle found
 }

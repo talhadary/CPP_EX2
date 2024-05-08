@@ -17,7 +17,7 @@ namespace ariel
     {
     private:
         static bool dfs(size_t v, vector<bool> &visited, vector<bool> &recStack, const vector<vector<int>> &graph, vector<size_t> &parent);
-        static bool isComponentBipartite(size_t start, const vector<vector<int>> &graph, vector<int> &colors);
+        static bool isComponentBipartite(size_t start, const vector<vector<int>> &graph, vector<size_t> &colors, vector<vector<size_t>> &groups);
         static bool bellmanFord(size_t start, const vector<vector<int>> &graph, vector<int> &distance, vector<size_t> &parent);
     
     public:

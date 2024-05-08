@@ -1,90 +1,102 @@
 /*
  * Demo program for Exercise 2.
- * Author: Benjamin Saldman.
+ * Author: Tal Hadary.
  */
 
 #include "Graph.hpp"
 #include "Algorithms.hpp"
 using ariel::Algorithms;
-
-#include <iostream>
-#include <stdexcept>
-#include <vector>
+using ariel::Graph;
 using namespace std;
 
 int main()
 {
-    ariel::Graph g;
-    // 3x3 matrix that represents a connected graph.
-    vector<vector<int>> graph = {
-        {0, 1, 0},
-        {1, 0, 1},
-        {0, 1, 0}};
-    g.loadGraph(graph); // Load the graph to the object.
+    Graph g1;
 
-    g.printGraph();                                    // Should print: "Graph with 3 vertices and 4 edges."
-    cout << Algorithms::isConnected(g) << endl;       // Should print: "1" (true).
-    vector<size_t> path = Algorithms::shortestPath(g, 0, 2);
-    for (size_t vertex : path)
+    vector<vector<int>> graph1 = 
+    {{1, 0, 0, 0},
+     {0,-2, 0, 3},
+     {0, 0, 3, 5},
+     {0, 0, 0, 0}};
+    g1.loadGraph(graph1);
+    g1.printGraph();
+
+    Algorithms::isConnected(g1);
+    Algorithms::isBipartite(g1);
+    Algorithms::isContainsCycle(g1);
+    Algorithms::negativeCycle(g1);
+    vector<size_t> path1 = Algorithms::shortestPath(g1, 0, 3);
+
+    if (path1.size() == 0)
     {
-        cout << vertex << ", ";
+        cout<< "no path!" << endl;
     }
-    cout << endl;
-    cout << Algorithms::isContainsCycle(g) << endl;    // Should print: "0" (false).
-    cout << Algorithms::isBipartite(g) << endl;        // Should print: "The graph is bipartite: A={0, 2}, B={1}."
-
-    // 5x5 matrix that represents a non-connected graph with a cycle.
-    vector<vector<int>> graph2 = {
-        {0, 1, 1, 0, 0},
-        {1, 0, 1, 0, 0},
-        {1, 1, 0, 1, 0},
-        {0, 0, 1, 0, 0},
-        {0, 0, 0, 0, 0}};
-
-    g.loadGraph(graph2); // Load the graph to the object.
-
-    g.printGraph();                                    // Should print: "Graph with 5 vertices and 8 edges."
-    cout << Algorithms::isConnected(g) << endl;        // Should print: "0" (false).
-    path = Algorithms::shortestPath(g, 0, 2);
-    for (int vertex : path)
+    else
     {
-        cout << vertex << ", ";
+        for (size_t vertex : path1)
+        {
+            cout << vertex << " ";
+        }
+        cout << endl;
     }
-    cout << Algorithms::isContainsCycle(g) << endl;    // Should print: "The cycle is: 0->1->2->0".
-    cout << Algorithms::isBipartite(g) << endl;        // Should print: "0" (false).
 
-    // 5x5 matrix that reprsents a connected weighted graph.
-    vector<vector<int>> graph3 = {
-        {0, 1, 2, 0, 0},
-        {1, 0, 3, 0, 0},
-        {2, 3, 0, 4, 0},
-        {0, 0, 4, 0, 5},
-        {0, 0, 0, 5, 0}};
-    g.loadGraph(graph3); // Load the graph to the object.
+    Graph g2;
 
-    g.printGraph();                                    // Should print: "Graph with 5 vertices and 10 edges."
-    cout << Algorithms::isConnected(g) << endl;        // Should print: "1" (true).
-    path = Algorithms::shortestPath(g, 0, 2);
-    for (int vertex : path)
+    vector<vector<int>> graph2 = 
+    {{0, 0, 0, 0},
+     {0,-2, 0,-3},
+     {1, 1, 3, 5},
+     {0,-10, 0, 0}};
+    
+    g2.loadGraph(graph2);
+    g2.printGraph();
+
+    Algorithms::isConnected(g2);
+    Algorithms::isBipartite(g2);
+    Algorithms::isContainsCycle(g2);
+    Algorithms::negativeCycle(g2);
+    vector<size_t> path2 = Algorithms::shortestPath(g2, 3, 1);
+
+    if (path2.size() == 0)
     {
-        cout << vertex << ", ";
+        cout<< "no path!" << endl;
     }
-    cout << Algorithms::isContainsCycle(g) << endl;    // Should print: "0" (false).
-    cout << Algorithms::isBipartite(g) << endl;        // Should print: "The graph is bipartite: A={0, 2, 4}, B={1, 3}."
-
-    // 5x4 matrix that reprsents invalid graph.
-    vector<vector<int>> graph4 = {
-        {0, 1, 2, 0},
-        {1, 0, 3, 0},
-        {2, 3, 0, 4},
-        {0, 0, 4, 0},
-        {0, 0, 0, 5}};
-    try
+    else
     {
-        g.loadGraph(graph4); // Load the graph to the object.
+        for (size_t vertex : path2)
+        {
+            cout << vertex << " ";
+        }
+        cout << endl;
     }
-    catch (const std::invalid_argument &e)
+
+    Graph g3;
+
+    vector<vector<int>> graph3 = 
+    {{0, 1, 1, 0},
+     {1, 0, 0, 1},
+     {1, 0, 0, 1},
+     {0, 1, 1, 0}};
+    
+    g3.loadGraph(graph3);
+    g3.printGraph();
+
+    Algorithms::isConnected(g3);
+    Algorithms::isBipartite(g3);
+    Algorithms::isContainsCycle(g3);
+    Algorithms::negativeCycle(g3);
+    vector<size_t> path3 = Algorithms::shortestPath(g3, 3, 2);
+
+    if (path3.size() == 0)
     {
-        cout << e.what() << endl; // Should print: "Invalid graph: The graph is not a square matrix."
+        cout<< "no path!" << endl;
+    }
+    else
+    {
+        for (size_t vertex : path3)
+        {
+            cout << vertex << " ";
+        }
+        cout << endl;
     }
 }
