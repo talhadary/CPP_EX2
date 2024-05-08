@@ -3,94 +3,179 @@
 using namespace std;
 using ariel::Graph;
 
-/// @brief Checks if the given graph is square (number of rows equals number of columns).
-/// @param graph The adjacency matrix representing the graph.
-/// @return True if the graph is square, false otherwise.
-bool Graph::isSquare(const vector<vector<int>> &graph)
+bool Graph::isSquare(const std::vector<std::vector<int>> &adjacencyMatrix)
 {
-    int rows = graph.size();
+    size_t rows = adjacencyMatrix.size();
     if (rows == 0)
     {
         return false;
     }
-
-    int cols = graph[0].size();
+    size_t cols = adjacencyMatrix[0].size();
     return rows == cols;
 }
 
-/// @brief Counts the number of vertices in the graph.
-/// @return The number of vertices.
-size_t Graph::countVertices()
+size_t Graph::countVertices() const
 {
     return graph.size();
 }
 
-/// @brief Counts the number of edges in the graph.
-/// @return The number of edges.
-size_t Graph::countEdges()
+size_t Graph::countEdges() const
 {
     size_t edges = 0;
-    for (const vector<int> &row : graph)
+    for (const auto &row : graph)
     {
         for (int value : row)
         {
             if (value != 0)
+            {
                 edges++;
+            }
         }
     }
     return edges;
 }
 
-/// @brief Loads the graph from the given adjacency matrix.
-/// @param graph The adjacency matrix representing the graph.
-/// @throw runtime_error if the adjacency matrix is not square.
-void Graph::loadGraph(const vector<vector<int>> &graph)
+void Graph::loadGraph(const std::vector<std::vector<int>> &adjacencyMatrix)
 {
-    if (isSquare(graph))
+    if (!isSquare(adjacencyMatrix))
     {
-        this->graph = graph;
-        this->vertices = countVertices();
-        this->edges = countEdges();
+        throw std::runtime_error("Invalid adjacency matrix: not square");
     }
-    else
-    {
-        throw runtime_error("Invalid adjacency matrix!");
-    }
+    graph = adjacencyMatrix;
 }
 
-/// @brief Prints the graph adjacency matrix.
-void Graph::printGraph()
+void Graph::printGraph() const
 {
-    vector<vector<int>> graph = this->graph;
-    cout << "Graph with " << vertices << " vertices and " << edges << " edges" << endl;
-    for (const vector<int> &row : graph)
+    std::cout << "Graph with " << countVertices() << " vertices and " << countEdges() << " edges\n";
+    for (const auto &row : graph)
     {
         for (int value : row)
         {
-            if (value >= 0) cout << " "; // Ensure proper spacing for positive values
-            cout << value << " ";
+            std::cout << value << ' ';
         }
-        cout << endl;
+        std::cout << '\n';
     }
 }
 
-/// @brief Getter method to access the graph.
-/// @return The adjacency matrix representing the graph.
-const vector<vector<int>> &Graph::getGraph() const
+const std::vector<std::vector<int>> &Graph::getGraph() const
 {
-    return this->graph;
+    return graph;
 }
 
-/// @brief Getter method for the number of vertices.
-/// @return The number of vertices in the graph.
 size_t Graph::getVertices() const
 {
-    return this->vertices;
+    return countVertices();
 }
 
-/// @brief Getter method for the number of edges.
-/// @return The number of edges in the graph.
 size_t Graph::getEdges() const
 {
-    return this->edges;
+    return countEdges();
+}
+
+void Graph::addGraphs(const Graph &other)
+{
+    const auto &otherGraph = other.getGraph();
+    if (graph.size() != otherGraph.size() || graph.empty())
+    {
+        throw std::runtime_error("Graphs of different sizes cannot be added");
+    }
+    for (size_t i = 0; i < graph.size(); ++i)
+    {
+        for (size_t j = 0; j < graph[i].size(); ++j)
+        {
+            graph[i][j] += otherGraph[i][j];
+        }
+    }
+}
+
+void Graph::subtractGraphs(const Graph &other)
+{
+    const auto &otherGraph = other.getGraph();
+    if (graph.size() != otherGraph.size() || graph.empty())
+    {
+        throw std::runtime_error("Graphs of different sizes cannot be subtracted");
+    }
+    for (size_t i = 0; i < graph.size(); ++i)
+    {
+        for (size_t j = 0; j < graph[i].size(); ++j)
+        {
+            graph[i][j] -= otherGraph[i][j];
+        }
+    }
+}
+
+void Graph::inPlaceAdd(int num)
+{
+    for (auto &row : graph)
+    {
+        for (int &element : row)
+        {
+            element += num;
+        }
+    }
+}
+
+void Graph::inPlaceSubtract(int num)
+{
+    for (auto &row : graph)
+    {
+        for (int &element : row)
+        {
+            element -= num;
+        }
+    }
+}
+
+void Graph::increment()
+{
+    inPlaceAdd(1);
+}
+
+void Graph::decrement()
+{
+    inPlaceSubtract(1);
+}
+
+void Graph::unaryPlus()
+{
+    // Unary plus does not change the sign of the expression
+}
+
+void Graph::unaryMinus()
+{
+    Graph::scalarMultiply(-1);
+}
+
+void Graph::scalarMultiply(int num)
+{
+    for (auto &row : graph)
+    {
+        for (int &element : row)
+        {
+            element *= num;
+        }
+    }
+}
+
+Graph Graph::multiplyGraphs(const Graph &other) const
+{
+    const auto &otherGraph = other.getGraph();
+    if (graph.size() != otherGraph.size() || graph.empty())
+    {
+        throw std::runtime_error("Graphs of different sizes cannot be multiplied");
+    }
+    Graph result;
+    std::vector<std::vector<int>> resultMatrix(graph.size(), std::vector<int>(graph.size(), 0));
+    for (size_t i = 0; i < graph.size(); ++i)
+    {
+        for (size_t j = 0; j < graph.size(); ++j)
+        {
+            for (size_t k = 0; k < graph.size(); ++k)
+            {
+                resultMatrix[i][j] += graph[i][k] * otherGraph[k][j];
+            }
+        }
+    }
+    result.loadGraph(resultMatrix);
+    return result;
 }

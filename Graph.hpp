@@ -4,25 +4,33 @@
 #include <iostream>
 #include <stdexcept>
 
-using namespace std;
 namespace ariel
 {
-  class Graph
-  {
-  private:
-    vector<vector<int>> graph;
-    size_t vertices;
-    size_t edges;
+    class Graph
+    {
+    private:
+        std::vector<std::vector<int>> graph;
 
-    static bool isSquare(const vector<vector<int>> &graph);
-    size_t countVertices();
-    size_t countEdges();
+    public:
+        void loadGraph(const std::vector<std::vector<int>> &adjacencyMatrix);
+        void printGraph() const;
+        const std::vector<std::vector<int>> &getGraph() const;
+        size_t getVertices() const;
+        size_t getEdges() const;
+        void addGraphs(const Graph &other);
+        void subtractGraphs(const Graph &other);
+        void inPlaceAdd(int num);
+        void inPlaceSubtract(int num);
+        void increment();
+        void decrement();
+        void unaryPlus();
+        void unaryMinus();
+        void scalarMultiply(int num);
+        Graph multiplyGraphs(const Graph &other) const;
 
-  public:
-    void loadGraph(const vector<vector<int>> &graph);
-    void printGraph();
-    const vector<vector<int>> &getGraph() const;
-    size_t getVertices() const;
-    size_t getEdges() const;
-  };
+    private:
+        static bool isSquare(const std::vector<std::vector<int>> &adjacencyMatrix);
+        size_t countVertices() const;
+        size_t countEdges() const;
+    };
 } // namespace ariel
