@@ -1,4 +1,4 @@
-# CPP_EX1_24
+# CPP_EX2
 
 ## Overview
 This project implements various graph algorithms using C++. The algorithms include determining strong connectivity, finding shortest paths, detecting cycles, checking bipartiteness, and identifying negative cycles in a graph.
