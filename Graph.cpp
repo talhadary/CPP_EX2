@@ -51,15 +51,16 @@ void Graph::loadGraph(const vector<vector<int>> &adjacencyMatrix)
 // Function to print the graph
 void Graph::printGraph() const
 {
-    cout << "Graph with " << countVertices() << " vertices and " << countEdges() << " edges\n";
+    cout << "Graph with " << countVertices() << " vertices and " << countEdges() << " edges:\n" << endl;
     for (const auto &row : graph)
     {
         for (int value : row)
         {
             cout << value << ' ';
         }
-        cout << '\n';
+        cout << endl;
     }
+    cout << endl;
 }
 
 // Function to get the adjacency matrix of the graph
@@ -80,9 +81,11 @@ size_t Graph::getEdges() const
     return countEdges();
 }
 
-// Function to add another graph to the current graph
-void Graph::addGraphs(const Graph &other)
+// Operator to add another graph to the current graph
+Graph Graph::operator+(const Graph &other)
 {
+    Graph g;
+    vector<vector<int>> adjMat(graph.size(), vector<int>(graph.size(), 0));
     const auto &otherGraph = other.getGraph();
     if (graph.size() != otherGraph.size() || graph.empty())
     {
@@ -92,14 +95,18 @@ void Graph::addGraphs(const Graph &other)
     {
         for (size_t j = 0; j < graph[i].size(); ++j)
         {
-            graph[i][j] += otherGraph[i][j];
+            adjMat[i][j] = graph[i][j] + otherGraph[i][j];
         }
     }
+    g.loadGraph(adjMat);
+    return g;
 }
 
-// Function to subtract another graph from the current graph
-void Graph::subtractGraphs(const Graph &other)
+// Operator to subtract another graph from the current graph
+Graph Graph::operator-(const Graph &other)
 {
+    Graph g;
+    vector<vector<int>> adjMat(graph.size(), vector<int>(graph.size(), 0));
     const auto &otherGraph = other.getGraph();
     if (graph.size() != otherGraph.size() || graph.empty())
     {
@@ -109,78 +116,195 @@ void Graph::subtractGraphs(const Graph &other)
     {
         for (size_t j = 0; j < graph[i].size(); ++j)
         {
-            graph[i][j] -= otherGraph[i][j];
+            adjMat[i][j] = graph[i][j] -= otherGraph[i][j];
         }
     }
+    g.loadGraph(adjMat);
+    return g;
 }
 
-// Function to perform in-place addition of a scalar value to all elements in the graph
-void Graph::inPlaceAdd(int num)
+// Operator to perform in-place addition of a scalar value to all elements in the graph
+void Graph::operator+=(int num)
 {
-    for (auto &row : graph)
+    for (size_t i = 0; i < graph.size(); ++i)
     {
-        for (int &element : row)
+        for (size_t j = 0; j < graph[i].size(); ++j)
         {
-            element += num;
+            graph[i][j] += num;
         }
     }
 }
 
-// Function to perform in-place subtraction of a scalar value from all elements in the graph
-void Graph::inPlaceSubtract(int num)
+// Operator to perform in-place subtraction of a scalar value from all elements in the graph
+void Graph::operator-=(int num)
 {
-    for (auto &row : graph)
+    for (size_t i = 0; i < graph.size(); ++i)
     {
-        for (int &element : row)
+        for (size_t j = 0; j < graph[i].size(); ++j)
         {
-            element -= num;
+            graph[i][j] -= num;
         }
     }
 }
 
-// Function to increment all elements in the graph by 1
-void Graph::increment()
+// Operator to increment all elements in the graph by 1
+void Graph::operator++()
 {
-    inPlaceAdd(1);
+    for (size_t i = 0; i < graph.size(); ++i)
+    {
+        for (size_t j = 0; j < graph[i].size(); ++j)
+        {
+            graph[i][j] += 1;
+        }
+    }
 }
 
-// Function to decrement all elements in the graph by 1
-void Graph::decrement()
+// Postfix version
+void Graph::operator++(int)
 {
-    inPlaceSubtract(1);
+    ++*this;
 }
 
-// Unary plus operator function
-void Graph::unaryPlus()
+// Operator to decrement all elements in the graph by 1
+void Graph::operator--()
+{
+    for (size_t i = 0; i < graph.size(); ++i)
+    {
+        for (size_t j = 0; j < graph[i].size(); ++j)
+        {
+            graph[i][j] -= 1;
+        }
+    }
+}
+
+// Postfix version
+void Graph::operator--(int)
+{
+    --*this;
+}
+
+// Unary plus operator
+void Graph::operator+()
 {
     // Unary plus does not change the sign of the expression
 }
 
-// Unary minus operator function
-void Graph::unaryMinus()
+// Unary minus operator
+void Graph::operator-()
 {
-    Graph::scalarMultiply(-1);
+    *this * (-1);
 }
 
-// Function to perform scalar multiplication of the graph by a given value
-void Graph::scalarMultiply(int num)
+// Checks if other graph is a proper subset of this graph
+bool Graph::operator>(const Graph &other) const
 {
-    for (auto &row : graph)
+    vector<vector<int>> g = other.getGraph();
+
+    if (graph.size() < g.size() || graph[0].size() < g[0].size())
     {
-        for (int &element : row)
+        return false;
+    }
+    
+    bool flag = false;
+    for (size_t i = 0; i < g.size(); i++)
+    {
+        for (size_t u = 0; u < g.size(); u++)
         {
-            element *= num;
+            if (g[i][u] != 0 && g[i][u] != graph[i][u])
+            {
+                flag = false;
+                break;
+            }
+            if(g[i][u] != 0 && graph[i][u] != 0)
+            {
+                flag = true;
+            }
         }
     }
+    if (flag) return true;
+
+    if (countEdges() > other.countEdges())
+    {
+        return true;
+    }
+    
+    if (countVertices() > other.countVertices())
+    {
+        return true;
+    }
+
+    return false;
 }
 
-// Function to multiply two graphs
-Graph Graph::multiplyGraphs(const Graph &other) const
+// Checks if this graph is a proper subset of other graph
+bool Graph::operator<(const Graph &other) const
+{
+    return other > *this;
+}
+
+// Checks if both graphs are equal in value and size
+bool Graph::operator==(const Graph &other) const
+{
+    vector<vector<int>> g = other.getGraph();
+    if (graph.size() != g.size() || graph[0].size() != g[0].size())
+    {
+        return false;
+    }
+    for (size_t i = 0; i < g.size(); i++)
+    {
+        for (size_t u = 0; u < g.size(); u++)
+        {
+            if (graph[i][u] != g[i][u])
+            {
+                return false;
+            }
+            
+        }
+    }
+    return true;
+}
+
+// Checks if both Graphs are not equal in value or size
+bool Graph::operator!=(const Graph &other) const
+{
+    return !(*this == other);
+}
+
+// Checks if other graph is a subset of this graph
+bool Graph::operator>=(const Graph &other) const
+{
+    return *this > other || *this == other;
+}
+
+// Checks if this graph is a subset of other graph
+bool Graph::operator<=(const Graph &other) const
+{
+    return *this < other || *this == other;
+}
+
+// Operator to perform scalar multiplication of the graph by a given value
+Graph Graph::operator*(int num)
+{
+    Graph g;
+    vector<vector<int>> adjMat(graph.size(), vector<int>(graph.size(), 0));
+    for (size_t i = 0; i < graph.size(); ++i)
+    {
+        for (size_t j = 0; j < graph[i].size(); ++j)
+        {
+            adjMat[i][j] = graph[i][j] *= num;
+        }
+    }
+    g.loadGraph(adjMat);
+    return g;
+}
+
+// Operator to multiply two graphs
+Graph Graph::operator*(const Graph &other) const
 {
     const auto &otherGraph = other.getGraph();
-    if (graph.size() != otherGraph.size() || graph.empty())
+    if (graph[0].size() != otherGraph.size() || graph.empty())
     {
-        throw runtime_error("Graphs of different sizes cannot be multiplied");
+        throw runtime_error("Only valid graph sizes 'n X m * m X l' can be multiplied");
     }
     Graph result;
     vector<vector<int>> resultMatrix(graph.size(), vector<int>(graph.size(), 0));

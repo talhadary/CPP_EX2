@@ -36,33 +36,50 @@ int main()
      {0, 1, 1, 0}};
     g3.loadGraph(graph3);
 
-    vector<vector<int>> graph4;
-    vector<vector<int>> graph5;
+    Graph g4;
 
-    g1.addGraphs(g2);
-    g1.printGraph();
+    cout << "g1 + g2 = g4\n" << endl;
+    g4 = g1 + g2;
+    g4.printGraph();
 
-    g2.subtractGraphs(g3);
-    g2.printGraph();
+    cout << "g1 - g2 = g4\n" << endl;
+    g4 = g2 - g3;
+    g4.printGraph();
 
-    g3.inPlaceAdd(5);
+    cout << "g3\n" << endl;
     g3.printGraph();
-    g3.inPlaceSubtract(3);
+    cout << "g3 += 5\n" << endl;
     g3.printGraph();
-
-    g1.increment();
-    g2.decrement();
-    g1.printGraph();
-    g2.printGraph();
-
-    g1.unaryPlus();
-    g2.unaryMinus();
-    g1.printGraph();
-    g2.printGraph();
-
-    g3.scalarMultiply(9);
+    g3 += 5;
+    g3.printGraph();
+    
+    cout << "g3 -= 5\n" << endl;
+    g3 -= 5;
     g3.printGraph();
 
-    Graph g = g1.multiplyGraphs(g2);
-    g.printGraph();
+    cout << "++g1\n--g2\n" << endl;
+    ++g1;
+    --g2;
+    g1.printGraph();
+    g2.printGraph();
+
+    cout << "g2++\ng1--\n" << endl;
+    g2++;
+    g1--;
+    g1.printGraph();
+    g2.printGraph();
+
+    cout << "+g1\n-g2\n" << endl;
+    +g1;
+    -g2;
+    g1.printGraph();
+    g2.printGraph();
+
+    cout << "g4 = g3 * 9\n" << endl;
+    g4 = g3 * 9;
+    g3.printGraph();
+
+    cout << "g4 = g1 * g2\n" << endl;
+    g4 = g1 * g2;
+    g4.printGraph();
 }

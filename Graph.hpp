@@ -18,16 +18,24 @@ namespace ariel
         const vector<vector<int>> &getGraph() const;
         size_t getVertices() const;
         size_t getEdges() const;
-        void addGraphs(const Graph &other);
-        void subtractGraphs(const Graph &other);
-        void inPlaceAdd(int num);
-        void inPlaceSubtract(int num);
-        void increment();
-        void decrement();
-        void unaryPlus();
-        void unaryMinus();
-        void scalarMultiply(int num);
-        Graph multiplyGraphs(const Graph &other) const;
+        Graph operator+(const Graph &other);
+        Graph operator-(const Graph &other);
+        void operator+=(int num);
+        void operator-=(int num);
+        void operator++();
+        void operator++(int);
+        void operator--();
+        void operator--(int);
+        void operator+();
+        void operator-();
+        bool operator>=(const Graph &other) const;
+        bool operator<=(const Graph &other) const;
+        bool operator==(const Graph &other) const;
+        bool operator!=(const Graph &other) const;
+        bool operator>(const Graph &other) const;
+        bool operator<(const Graph &other) const;
+        Graph operator*(int num);
+        Graph operator*(const Graph &other) const;
 
     private:
         static bool isSquare(const vector<vector<int>> &adjacencyMatrix);

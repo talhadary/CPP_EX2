@@ -30,16 +30,16 @@ The Graph class also has public data members and member functions:
 9. `getGraph()`: Returns the Adjacency matrix by reference.
 10. `getVertices()`: Returns private data member `vertices` by value.
 11. `getEdges()`: Return private data member `edges` by value.
-12. `addGraphs(other)`: Adds the adjacency matrix of another graph 'other' to the current graph. Throws an exception if the sizes of the two matrices are different.
-13. `subtractGraphs(other)`: Subtracts the adjacency matrix of another graph 'other' from the current graph. Throws an exception if the sizes of the two matrices are different.
-14. `inPlaceAdd(num)`: Adds a scalar value 'num' to all elements of the adjacency matrix in place.
-15. `inPlaceSubtract(num)`: Subtracts a scalar value 'num' from all elements of the adjacency matrix in place.
-16. `increment()`: Increments all elements of the adjacency matrix by 1 in place.
-17. `decrement()`: Decrements all elements of the adjacency matrix by 1 in place.
-18. `unaryPlus()`: No-op function. Unary plus does not change the sign of the expression.
-19. `unaryMinus()`: Negates all elements of the adjacency matrix in place.
-20. `scalarMultiply(num)`: Multiplies all elements of the adjacency matrix by a scalar value 'num' in place.
-21. `multiplyGraphs(other)`: Multiplies the adjacency matrix of another graph 'other' with the current graph's adjacency matrix. Throws an exception if the sizes of the two matrices are different.
+12. `operator+ (other)`: Adds the adjacency matrix of another graph 'other' to the current graph. Throws an exception if the sizes of the two matrices are different.
+13. `operator- (other)`: Subtracts the adjacency matrix of another graph 'other' from the current graph. Throws an exception if the sizes of the two matrices are different.
+14. `operator+= (num)`: Adds a scalar value 'num' to all elements of the adjacency matrix in place.
+15. `operator-= (num)`: Subtracts a scalar value 'num' from all elements of the adjacency matrix in place.
+16. `operator++ ()`: Increments all elements of the adjacency matrix by 1 in place.
+17. `operator-- ()`: Decrements all elements of the adjacency matrix by 1 in place.
+18. `operator+ ()`: No-op function. Unary plus does not change the sign of the expression.
+19. `operator- ()`: Negates all elements of the adjacency matrix in place.
+20. `operator* (num)`: Multiplies all elements of the adjacency matrix by a scalar value 'num' in place.
+21. `operator* (other)`: Multiplies the adjacency matrix of another graph 'other' with the current graph's adjacency matrix. Throws an exception if the sizes of the two matrices are different.
 
 ## Algorithms Implementations
 
