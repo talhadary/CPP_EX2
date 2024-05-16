@@ -11,6 +11,9 @@ namespace ariel
     {
     private:
         vector<vector<int>> graph;
+        static bool isSquare(const vector<vector<int>> &adjacencyMatrix);
+        size_t countVertices() const;
+        size_t countEdges() const;
 
     public:
         void loadGraph(const vector<vector<int>> &adjacencyMatrix);
@@ -36,10 +39,6 @@ namespace ariel
         bool operator<(const Graph &other) const;
         Graph operator*(int num);
         Graph operator*(const Graph &other) const;
-
-    private:
-        static bool isSquare(const vector<vector<int>> &adjacencyMatrix);
-        size_t countVertices() const;
-        size_t countEdges() const;
+        friend ostream& operator<<(ostream& os, const Graph& g);
     };
 } // namespace ariel

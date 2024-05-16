@@ -321,3 +321,10 @@ Graph Graph::operator*(const Graph &other) const
     result.loadGraph(resultMatrix);
     return result;
 }
+
+// Output operator <<
+ostream& ariel::operator<<(ostream& os, const Graph& g)
+{
+    g.printGraph();
+    return os;
+}

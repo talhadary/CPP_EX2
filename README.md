@@ -40,6 +40,7 @@ The Graph class also has public data members and member functions:
 19. `operator- ()`: Negates all elements of the adjacency matrix in place.
 20. `operator* (num)`: Multiplies all elements of the adjacency matrix by a scalar value 'num' in place.
 21. `operator* (other)`: Multiplies the adjacency matrix of another graph 'other' with the current graph's adjacency matrix. Throws an exception if the sizes of the two matrices are different.
+22. `operator<< (Graph)`: an output operator that calls `printGraph()`.
 
 ## Algorithms Implementations
 

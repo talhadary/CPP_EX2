@@ -40,46 +40,46 @@ int main()
 
     cout << "g1 + g2 = g4\n" << endl;
     g4 = g1 + g2;
-    g4.printGraph();
+    cout << g4 << endl;
 
     cout << "g1 - g2 = g4\n" << endl;
     g4 = g2 - g3;
-    g4.printGraph();
+    cout << g4 << endl;
 
     cout << "g3\n" << endl;
-    g3.printGraph();
+    cout << g3 << endl;
     cout << "g3 += 5\n" << endl;
-    g3.printGraph();
+    cout << g3 << endl;
     g3 += 5;
-    g3.printGraph();
+    cout << g3 << endl;
     
     cout << "g3 -= 5\n" << endl;
     g3 -= 5;
-    g3.printGraph();
+    cout << g3 << endl;
 
     cout << "++g1\n--g2\n" << endl;
     ++g1;
     --g2;
-    g1.printGraph();
-    g2.printGraph();
+    cout << g1 << endl;
+    cout << g2 << endl;
 
     cout << "g2++\ng1--\n" << endl;
     g2++;
     g1--;
-    g1.printGraph();
-    g2.printGraph();
+    cout << g1 << endl ;
+    cout << g2 << endl;
 
     cout << "+g1\n-g2\n" << endl;
     +g1;
     -g2;
-    g1.printGraph();
-    g2.printGraph();
+    cout << g1 << endl;
+    cout << g2 << endl;
 
     cout << "g4 = g3 * 9\n" << endl;
     g4 = g3 * 9;
-    g3.printGraph();
+    cout << g3 << endl;
 
     cout << "g4 = g1 * g2\n" << endl;
     g4 = g1 * g2;
-    g4.printGraph();
+    cout << g4 << endl;
 }
