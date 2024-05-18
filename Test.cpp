@@ -119,7 +119,7 @@ TEST_CASE("Test greater than operator")
     Graph g2;
     g2.loadGraph({{0, 2}, {3, 4}});
     Graph g3;
-    g3.loadGraph({{2, 2, -1}, {3 ,4 ,5}, {0, 0, 0}});
+    g3.loadGraph({{2, 2, -1}, {3, 4, 5}, {0, 0, 0}});
     Graph g4;
     g4.loadGraph({{2, 0, -1}, {3, 4, 5}, {0, 1, 0}});
     CHECK(g1 > g2);
@@ -135,7 +135,7 @@ TEST_CASE("Test less than operator")
     Graph g2;
     g2.loadGraph({{0, 2}, {3, 4}});
     Graph g3;
-    g3.loadGraph({{2, 2, -1}, {3 ,4 ,5}, {0, 0, 0}});
+    g3.loadGraph({{2, 2, -1}, {3, 4, 5}, {0, 0, 0}});
     Graph g4;
     g4.loadGraph({{2, 0, -1}, {3, 4, 5}, {0, 1, 0}});
     CHECK(g2 < g1);
@@ -151,7 +151,7 @@ TEST_CASE("Test greater than or equal operator")
     Graph g2;
     g2.loadGraph({{2, 2}, {3, 4}});
     Graph g3;
-    g3.loadGraph({{2, 2, -1}, {3 ,4 ,5}, {0, 0, 0}});
+    g3.loadGraph({{2, 2, -1}, {3, 4, 5}, {0, 0, 0}});
     Graph g4;
     g4.loadGraph({{2, 0, -1}, {3, 4, 5}, {0, 0, 0}});
     CHECK(g1 >= g2);

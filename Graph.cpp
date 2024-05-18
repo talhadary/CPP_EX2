@@ -51,7 +51,8 @@ void Graph::loadGraph(const vector<vector<int>> &adjacencyMatrix)
 // Function to print the graph
 void Graph::printGraph() const
 {
-    cout << "Graph with " << countVertices() << " vertices and " << countEdges() << " edges:\n" << endl;
+    cout << "Graph with " << countVertices() << " vertices and " << countEdges() << " edges:\n"
+         << endl;
     for (const auto &row : graph)
     {
         for (int value : row)
@@ -192,7 +193,7 @@ void Graph::operator+()
 // Unary minus operator
 void Graph::operator-()
 {
-    *this * (-1);
+    *this *(-1);
 }
 
 // Checks if other graph is a proper subset of this graph
@@ -204,7 +205,7 @@ bool Graph::operator>(const Graph &other) const
     {
         return false;
     }
-    
+
     bool flag = false;
     for (size_t i = 0; i < g.size(); i++)
     {
@@ -215,19 +216,20 @@ bool Graph::operator>(const Graph &other) const
                 flag = false;
                 break;
             }
-            if(g[i][u] != 0 && graph[i][u] != 0)
+            if (g[i][u] != 0 && graph[i][u] != 0)
             {
                 flag = true;
             }
         }
     }
-    if (flag) return true;
+    if (flag)
+        return true;
 
     if (countEdges() > other.countEdges())
     {
         return true;
     }
-    
+
     if (countVertices() > other.countVertices())
     {
         return true;
@@ -258,7 +260,6 @@ bool Graph::operator==(const Graph &other) const
             {
                 return false;
             }
-            
         }
     }
     return true;
@@ -323,7 +324,7 @@ Graph Graph::operator*(const Graph &other) const
 }
 
 // Output operator <<
-ostream& ariel::operator<<(ostream& os, const Graph& g)
+ostream &ariel::operator<<(ostream &os, const Graph &g)
 {
     g.printGraph();
     return os;

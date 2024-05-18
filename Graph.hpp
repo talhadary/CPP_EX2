@@ -39,6 +39,6 @@ namespace ariel
         bool operator<(const Graph &other) const;
         Graph operator*(int num);
         Graph operator*(const Graph &other) const;
-        friend ostream& operator<<(ostream& os, const Graph& g);
+        friend ostream &operator<<(ostream &os, const Graph &g);
     };
 } // namespace ariel
